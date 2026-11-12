@@ -1,0 +1,8 @@
+{
+  "name": "Fleet Management System",
+  "description": "Profesionálny systém riadenia a monitorovania vozového parku pre slovenskú logistickú spoločnosť LogiTrans s.r.o. zahŕňajúci evidenciu vozidiel, vodičov, tankovania, nákladov, údržby a technických kontrol s podrobnou analytikou a exportom.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
