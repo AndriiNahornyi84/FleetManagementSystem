@@ -27,6 +27,7 @@ import {
   ConsumptionBarChart
 } from '../components/charts/Charts.js';
 import { NavTab } from '../components/Sidebar.js';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface DashboardProps {
   data: any;
@@ -36,12 +37,13 @@ interface DashboardProps {
 }
 
 export function DashboardPage({ data, loading, onNavigate, onExport }: DashboardProps) {
+  const { t } = useI18n();
   if (loading || !data) {
     return (
       <div className="p-8 flex items-center justify-center min-h-[500px]">
         <div className="flex flex-col items-center gap-3 text-slate-400">
           <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-medium">Načítavam údaje o flotile...</span>
+          <span className="text-xs font-medium">{t('common.loading')}</span>
         </div>
       </div>
     );
@@ -51,42 +53,42 @@ export function DashboardPage({ data, loading, onNavigate, onExport }: Dashboard
 
   const statCards = [
     {
-      title: 'Celkový počet vozidiel',
+      title: t('dashboard.totalVehicles'),
       value: metrics.totalVehicles,
       sub: `${metrics.outOfServiceVehicles} mimo prevádzky`,
       icon: Truck,
       color: 'text-blue-600 bg-blue-50'
     },
     {
-      title: 'Aktívne vozidlá',
+      title: t('dashboard.activeVehicles'),
       value: metrics.activeVehicles,
       sub: `${Math.round((metrics.activeVehicles / (metrics.totalVehicles || 1)) * 100)}% flotily v prevádzke`,
       icon: CheckCircle,
       color: 'text-emerald-600 bg-emerald-50'
     },
     {
-      title: 'Vozidlá v servise',
+      title: t('dashboard.inService'),
       value: metrics.inServiceVehicles,
-      sub: metrics.inServiceVehicles > 0 ? 'Prebieha údržba' : 'Žiadne v servise',
+      sub: metrics.inServiceVehicles > 0 ? t('dashboard.maintenanceRunning') : t('dashboard.noneInService'),
       icon: Wrench,
       color: metrics.inServiceVehicles > 0 ? 'text-amber-600 bg-amber-50' : 'text-slate-500 bg-slate-50'
     },
     {
-      title: 'Náklady tento mesiac',
+      title: t('dashboard.monthlyExpenses'),
       value: formatCurrency(metrics.totalMonthlyExpenses),
       sub: `Náklad na km: ${metrics.costPerKm.toFixed(3)} €/km`,
       icon: Receipt,
       color: 'text-indigo-600 bg-indigo-50'
     },
     {
-      title: 'Najazdené kilometre',
+      title: t('dashboard.distance'),
       value: formatKm(metrics.totalDistanceDriven),
       sub: 'Celkový stav tachometrov',
       icon: Gauge,
       color: 'text-purple-600 bg-purple-50'
     },
     {
-      title: 'Priemerná spotreba',
+      title: t('dashboard.consumption'),
       value: formatConsumption(metrics.fleetAverageConsumption),
       sub: 'Vypočítané z reálnych jázd',
       icon: Droplets,
@@ -108,10 +110,10 @@ export function DashboardPage({ data, loading, onNavigate, onExport }: Dashboard
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            Prehľad vozového parku
+            {t('dashboard.title')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Vitajte v riadiacom systéme logistického parku LogiTrans s.r.o. Košice.
+            {t('dashboard.welcome')}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -161,14 +163,14 @@ export function DashboardPage({ data, loading, onNavigate, onExport }: Dashboard
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">Mesačné náklady</h3>
+              <h3 className="text-sm font-semibold text-slate-900">{t('dashboard.monthlyCosts')}</h3>
               <p className="text-xs text-slate-400">Vývoj celkových nákladov za posledných 12 mesiacov</p>
             </div>
             <button
               onClick={() => onNavigate('reports')}
               className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
             >
-              <span>Viac</span>
+              <span>{t('dashboard.more')}</span>
               <ArrowRight className="w-3 h-3" />
             </button>
           </div>
@@ -179,14 +181,14 @@ export function DashboardPage({ data, loading, onNavigate, onExport }: Dashboard
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">Štruktúra nákladov</h3>
+              <h3 className="text-sm font-semibold text-slate-900">{t('dashboard.expenseStructure')}</h3>
               <p className="text-xs text-slate-400">Rozdelenie podľa kategórií (palivo, servis, poistenie...)</p>
             </div>
             <button
               onClick={() => onNavigate('expenses')}
               className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
             >
-              <span>Detail</span>
+              <span>{t('dashboard.detail')}</span>
               <ArrowRight className="w-3 h-3" />
             </button>
           </div>
@@ -197,7 +199,7 @@ export function DashboardPage({ data, loading, onNavigate, onExport }: Dashboard
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">Využitie vozidiel</h3>
+              <h3 className="text-sm font-semibold text-slate-900">{t('dashboard.vehicleUsage')}</h3>
               <p className="text-xs text-slate-400">Porovnanie stavu kilometrov kľúčových vozidiel</p>
             </div>
             <button
@@ -215,7 +217,7 @@ export function DashboardPage({ data, loading, onNavigate, onExport }: Dashboard
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">Spotreba paliva (l/100 km)</h3>
+              <h3 className="text-sm font-semibold text-slate-900">{t('dashboard.fuelConsumption')} (l/100 km)</h3>
               <p className="text-xs text-slate-400">Priemerná spotreba vozidiel podľa reálnych tankovaní</p>
             </div>
             <button
@@ -237,7 +239,7 @@ export function DashboardPage({ data, loading, onNavigate, onExport }: Dashboard
           <div>
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-xs font-semibold text-slate-900 uppercase tracking-wide">
-                Najbližšie STK / EK
+                {t('dashboard.upcomingInspections')}
               </h4>
               <button
                 onClick={() => onNavigate('inspections')}
@@ -279,7 +281,7 @@ export function DashboardPage({ data, loading, onNavigate, onExport }: Dashboard
           <div>
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-xs font-semibold text-slate-900 uppercase tracking-wide">
-                Nadchádzajúci servis
+                {t('dashboard.upcomingMaintenance')}
               </h4>
               <button
                 onClick={() => onNavigate('maintenance')}
@@ -318,7 +320,7 @@ export function DashboardPage({ data, loading, onNavigate, onExport }: Dashboard
           <div>
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-xs font-semibold text-slate-900 uppercase tracking-wide">
-                Posledné tankovania
+                {t('dashboard.recentFuel')}
               </h4>
               <button
                 onClick={() => onNavigate('fuel')}
@@ -362,7 +364,7 @@ export function DashboardPage({ data, loading, onNavigate, onExport }: Dashboard
           <div>
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-xs font-semibold text-slate-900 uppercase tracking-wide">
-                Najnovšie upozornenia
+                {t('dashboard.recentNotifications')}
               </h4>
               <button
                 onClick={() => onNavigate('notifications')}

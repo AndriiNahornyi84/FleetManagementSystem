@@ -14,6 +14,7 @@ import {
   ChevronRight,
   ShieldAlert
 } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext.js';
 
 export type NavTab =
   | 'dashboard'
@@ -42,22 +43,23 @@ export function Sidebar({
   onToggleCollapse,
   unreadCount
 }: SidebarProps) {
+  const { t } = useI18n();
   const navItems = [
-    { id: 'dashboard' as NavTab, label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'vehicles' as NavTab, label: 'Vozidlá', icon: Truck },
-    { id: 'drivers' as NavTab, label: 'Vodiči', icon: Users },
-    { id: 'fuel' as NavTab, label: 'Tankovanie', icon: Fuel },
-    { id: 'expenses' as NavTab, label: 'Náklady', icon: Receipt },
-    { id: 'maintenance' as NavTab, label: 'Údržba a servis', icon: Wrench },
-    { id: 'inspections' as NavTab, label: 'Technické kontroly', icon: ShieldCheck },
+    { id: 'dashboard' as NavTab, label: t('nav.dashboard'), icon: LayoutDashboard },
+    { id: 'vehicles' as NavTab, label: t('nav.vehicles'), icon: Truck },
+    { id: 'drivers' as NavTab, label: t('nav.drivers'), icon: Users },
+    { id: 'fuel' as NavTab, label: t('nav.fuel'), icon: Fuel },
+    { id: 'expenses' as NavTab, label: t('nav.expenses'), icon: Receipt },
+    { id: 'maintenance' as NavTab, label: t('nav.maintenance'), icon: Wrench },
+    { id: 'inspections' as NavTab, label: t('nav.inspections'), icon: ShieldCheck },
     {
       id: 'notifications' as NavTab,
-      label: 'Upozornenia',
+      label: t('nav.notifications'),
       icon: Bell,
       badge: unreadCount > 0 ? unreadCount : undefined
     },
-    { id: 'reports' as NavTab, label: 'Štatistiky a reporty', icon: BarChart3 },
-    { id: 'settings' as NavTab, label: 'Nastavenia', icon: Settings }
+    { id: 'reports' as NavTab, label: t('nav.reports'), icon: BarChart3 },
+    { id: 'settings' as NavTab, label: t('nav.settings'), icon: Settings }
   ];
 
   return (
@@ -86,7 +88,7 @@ export function Sidebar({
         <button
           onClick={onToggleCollapse}
           className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors ml-auto"
-          title={isCollapsed ? 'Rozbaliť menu' : 'Zbaliť menu'}
+          title={isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}
         >
           {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>
@@ -135,7 +137,7 @@ export function Sidebar({
           {!isCollapsed && (
             <div className="truncate text-xs">
               <div className="font-semibold text-white truncate">Miroslav Štefánik</div>
-              <div className="text-[10px] text-slate-400 truncate">Hlavný dispečer</div>
+              <div className="text-[10px] text-slate-400 truncate">{t('sidebar.dispatcher')}</div>
             </div>
           )}
         </div>

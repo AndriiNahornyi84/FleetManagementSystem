@@ -14,6 +14,7 @@ import { Expense, ExpenseCategory, Vehicle } from '../types/fleet.js';
 import { formatCurrency, formatDate } from '../utils/formatters.js';
 import { Modal } from '../components/Modal.js';
 import { exportToCsv } from '../utils/export.js';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface ExpensesPageProps {
   expenses: Expense[];
@@ -43,6 +44,7 @@ export function ExpensesPage({
   api,
   searchTerm = ''
 }: ExpensesPageProps) {
+  const { t } = useI18n();
   const [localSearch, setLocalSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [vehicleFilter, setVehicleFilter] = useState<string>('all');
@@ -155,10 +157,10 @@ export function ExpensesPage({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            Správa nákladov
+            {t('page.expenses.title')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Centrálna evidencia servisných, poistných a prevádzkových nákladov s ochranou pred duplicitným účtovaním.
+            {t('page.expenses.description')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -167,14 +169,14 @@ export function ExpensesPage({
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors shadow-2xs"
           >
             <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Exportovať CSV</span>
+            <span>{t('page.exportCsv')}</span>
           </button>
           <button
             onClick={openCreateModal}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Pridať náklad</span>
+            <span>{t('page.addExpense')}</span>
           </button>
         </div>
       </div>
@@ -212,7 +214,7 @@ export function ExpensesPage({
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Hľadať v popise, dodávateľovi alebo čísle faktúry..."
+            placeholder={t('page.searchExpense')}
             value={effectiveSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all"
@@ -259,13 +261,13 @@ export function ExpensesPage({
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-[11px]">
               <tr>
-                <th className="py-3 px-4 font-semibold">Dátum</th>
-                <th className="py-3 px-4 font-semibold">Kategória</th>
-                <th className="py-3 px-4 font-semibold">Vozidlo</th>
-                <th className="py-3 px-4 font-semibold">Popis položky</th>
-                <th className="py-3 px-4 font-semibold">Dodávateľ / Doklad</th>
-                <th className="py-3 px-4 font-semibold text-right">Suma</th>
-                <th className="py-3 px-4 font-semibold text-right">Akcie</th>
+                <th className="py-3 px-4 font-semibold">{t('page.date')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.category')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.vehicle')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.description')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.vendorReceipt')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.amount')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -334,7 +336,7 @@ export function ExpensesPage({
         <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Kategória *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.expenseCategory')}</label>
               <select
                 required
                 value={formData.category}
@@ -347,7 +349,7 @@ export function ExpensesPage({
               </select>
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Dátum *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.expenseDate')}</label>
               <input
                 type="date"
                 required
@@ -375,7 +377,7 @@ export function ExpensesPage({
               </select>
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Suma v EUR (€) *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.amount')} (EUR) *</label>
               <input
                 type="number"
                 step="0.01"
@@ -389,7 +391,7 @@ export function ExpensesPage({
           </div>
 
           <div>
-            <label className="block font-medium text-slate-700 mb-1">Popis nákladu *</label>
+            <label className="block font-medium text-slate-700 mb-1">{t('page.expenseDescription')}</label>
             <input
               type="text"
               required
@@ -402,7 +404,7 @@ export function ExpensesPage({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Dodávateľ</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.supplier')}</label>
               <input
                 type="text"
                 placeholder="napr. Todos Košice s.r.o."
@@ -412,7 +414,7 @@ export function ExpensesPage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Číslo dokladu / faktúry</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.invoice')}</label>
               <input
                 type="text"
                 placeholder="napr. FA-2026-0812"

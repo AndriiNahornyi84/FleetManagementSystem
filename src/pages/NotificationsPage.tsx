@@ -13,6 +13,7 @@ import {
 import { NotificationItem, NotificationSeverity } from '../types/fleet.js';
 import { formatDate } from '../utils/formatters.js';
 import { NavTab } from '../components/Sidebar.js';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface NotificationsPageProps {
   notifications: NotificationItem[];
@@ -29,6 +30,7 @@ export function NotificationsPage({
   api,
   onNavigateToVehicle
 }: NotificationsPageProps) {
+  const { t } = useI18n();
   const [severityFilter, setSeverityFilter] = useState<string>('all');
   const [readFilter, setReadFilter] = useState<'all' | 'unread' | 'read'>('all');
 
@@ -78,7 +80,7 @@ export function NotificationsPage({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            Centrum upozornení
+            {t('page.notifications.title')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             Automatické notifikácie generované na základe termínov STK/EK, poistiek, servisu a spotreby.
@@ -91,7 +93,7 @@ export function NotificationsPage({
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors shadow-2xs"
             >
               <CheckCheck className="w-3.5 h-3.5 text-blue-600" />
-              <span>Označiť všetky ako prečítané</span>
+              <span>{t('page.markAllRead')}</span>
             </button>
           )}
         </div>
@@ -102,9 +104,9 @@ export function NotificationsPage({
         {/* Read / Unread Tabs */}
         <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg text-xs">
           {[
-            { id: 'all', label: 'Všetky' },
-            { id: 'unread', label: `Neprečítané (${unreadCount})` },
-            { id: 'read', label: 'Prečítané' }
+            { id: 'all', label: t('common.all') },
+            { id: 'unread', label: `${t('page.unread')} (${unreadCount})` },
+            { id: 'read', label: t('page.read') }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -122,16 +124,16 @@ export function NotificationsPage({
 
         {/* Severity Filter */}
         <div className="flex items-center gap-2 text-xs">
-          <span className="text-slate-500 font-medium">Závažnosť:</span>
+          <span className="text-slate-500 font-medium">{t('page.severity')}</span>
           <select
             value={severityFilter}
             onChange={(e) => setSeverityFilter(e.target.value)}
             className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none text-xs text-slate-800"
           >
-            <option value="all">Všetky úrovne</option>
-            <option value="critical">Kritické (červené)</option>
-            <option value="warning">Varovania (oranžové)</option>
-            <option value="info">Informačné (modré)</option>
+            <option value="all">{t('page.allLevels')}</option>
+            <option value="critical">{t('page.critical')}</option>
+            <option value="warning">{t('page.warning')}</option>
+            <option value="info">{t('page.info')}</option>
           </select>
         </div>
       </div>
@@ -178,7 +180,7 @@ export function NotificationsPage({
                           {item.title}
                         </h4>
                         {item.isRead === 0 && (
-                          <span className="w-2 h-2 rounded-full bg-blue-600" title="Nové" />
+                          <span className="w-2 h-2 rounded-full bg-blue-600" title={t('notification.new')} />
                         )}
                         {item.vehiclePlate && (
                           <span className="font-mono text-[10px] font-semibold text-slate-600 px-1.5 py-0.5 rounded bg-slate-100">
@@ -203,7 +205,7 @@ export function NotificationsPage({
                       <button
                         onClick={() => onNavigateToVehicle(item.vehicleId!)}
                         className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded transition-colors text-xs flex items-center gap-1 font-medium"
-                        title="Zobraziť vozidlo"
+                        title={t('notification.viewVehicle')}
                       >
                         <ExternalLink className="w-4 h-4" />
                         <span className="hidden sm:inline">Vozidlo</span>
@@ -214,7 +216,7 @@ export function NotificationsPage({
                       <button
                         onClick={() => handleMarkRead(item.id)}
                         className="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-slate-100 rounded transition-colors"
-                        title="Označiť ako prečítané"
+                        title={t('notification.markRead')}
                       >
                         <CheckCircle2 className="w-4 h-4" />
                       </button>

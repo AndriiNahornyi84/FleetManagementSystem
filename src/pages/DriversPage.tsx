@@ -17,6 +17,7 @@ import { Driver, Vehicle } from '../types/fleet.js';
 import { formatDate } from '../utils/formatters.js';
 import { Modal } from '../components/Modal.js';
 import { exportToCsv } from '../utils/export.js';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface DriversPageProps {
   drivers: Driver[];
@@ -35,6 +36,7 @@ export function DriversPage({
   api,
   searchTerm = ''
 }: DriversPageProps) {
+  const { t } = useI18n();
   const [localSearch, setLocalSearch] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
@@ -156,10 +158,10 @@ export function DriversPage({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            Zoznam vodičov
+            {t('page.drivers.title')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Správa vodičských oprávnení, kontaktov a priradenia k jednotlivým vozidlám flotily.
+            {t('page.drivers.description')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -168,14 +170,14 @@ export function DriversPage({
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors shadow-2xs"
           >
             <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Exportovať CSV</span>
+            <span>{t('page.exportCsv')}</span>
           </button>
           <button
             onClick={openCreateModal}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Pridať vodiča</span>
+            <span>{t('page.addDriver')}</span>
           </button>
         </div>
       </div>
@@ -186,7 +188,7 @@ export function DriversPage({
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Vyhľadať vodiča podľa mena, telefónu alebo čísla VP..."
+            placeholder={t('page.searchDriver')}
             value={effectiveSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all"
@@ -230,7 +232,7 @@ export function DriversPage({
                       ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                       : 'bg-slate-100 text-slate-500'
                   }`}>
-                    {driver.status === 'active' ? 'Aktívny' : 'Neaktívny'}
+                    {driver.status === 'active' ? t('common.active') : t('status.inactive')}
                   </span>
                 </div>
 
@@ -262,13 +264,13 @@ export function DriversPage({
                   </div>
                   <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
                     <Truck className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                    <span className="text-slate-500">Vozidlo:</span>
+                      <span className="text-slate-500">{t('page.vehicle')}:</span>
                     {driver.assignedVehiclePlate ? (
                       <span className="font-semibold text-slate-900 font-mono">
                         {driver.assignedVehiclePlate} <span className="font-normal text-slate-500">({driver.assignedVehicleName})</span>
                       </span>
                     ) : (
-                      <span className="text-slate-400 italic">Nepriradené</span>
+                      <span className="text-slate-400 italic">{t('vehicles.notAssigned')}</span>
                     )}
                   </div>
                 </div>
@@ -287,14 +289,14 @@ export function DriversPage({
                   className="flex items-center gap-1 px-2.5 py-1 text-xs text-slate-600 hover:text-amber-600 hover:bg-slate-100 rounded-lg transition-colors font-medium"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
-                  <span>Upraviť</span>
+                  <span>{t('common.edit')}</span>
                 </button>
                 <button
                   onClick={() => setDeleteConfirmId(driver.id)}
                   className="flex items-center gap-1 px-2.5 py-1 text-xs text-slate-600 hover:text-rose-600 hover:bg-slate-100 rounded-lg transition-colors font-medium"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  <span>Zmazať</span>
+                  <span>{t('common.delete')}</span>
                 </button>
               </div>
             </div>
@@ -306,14 +308,14 @@ export function DriversPage({
       <Modal
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
-        title={editingDriver ? `Upraviť vodiča: ${editingDriver.firstName} ${editingDriver.lastName}` : 'Pridať nového vodiča'}
-        subtitle="Zadajte osobné údaje, číslo vodičského preukazu a priraďte vozidlo."
+        title={editingDriver ? `${t('common.edit')}: ${editingDriver.firstName} ${editingDriver.lastName}` : t('page.addDriver')}
+        subtitle={t('driver.formHint')}
         maxWidth="lg"
       >
         <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Meno *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.driverName')}</label>
               <input
                 type="text"
                 required
@@ -323,7 +325,7 @@ export function DriversPage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Priezvisko *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.lastName')}</label>
               <input
                 type="text"
                 required
@@ -360,7 +362,7 @@ export function DriversPage({
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Číslo VP *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.licenseNumber')}</label>
               <input
                 type="text"
                 required
@@ -371,7 +373,7 @@ export function DriversPage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Kategórie *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.licenseCategory')}</label>
               <input
                 type="text"
                 required
@@ -382,7 +384,7 @@ export function DriversPage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Platnosť VP do *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.licenseExpiry')}</label>
               <input
                 type="date"
                 required
@@ -410,14 +412,14 @@ export function DriversPage({
               </select>
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Stav vodiča</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.driverStatus')}</label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white"
               >
-                <option value="active">Aktívny</option>
-                <option value="inactive">Neaktívny (PN / dovolenka)</option>
+                <option value="active">{t('common.active')}</option>
+                <option value="inactive">{t('status.inactive')}</option>
               </select>
             </div>
           </div>

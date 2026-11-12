@@ -26,6 +26,7 @@ import {
 } from '../utils/formatters.js';
 import { Modal } from '../components/Modal.js';
 import { exportToCsv } from '../utils/export.js';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface VehiclesPageProps {
   vehicles: Vehicle[];
@@ -44,6 +45,7 @@ export function VehiclesPage({
   api,
   searchTerm = ''
 }: VehiclesPageProps) {
+  const { t } = useI18n();
   const [localSearch, setLocalSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
@@ -230,7 +232,7 @@ export function VehiclesPage({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            Evidencia vozidiel
+            {t('vehicles.title')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             Kompletná správa vozového parku, technických parametrov, stavu tachometrov a vodičov.
@@ -242,14 +244,14 @@ export function VehiclesPage({
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors shadow-2xs"
           >
             <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Exportovať CSV</span>
+            <span>{t('vehicles.export')}</span>
           </button>
           <button
             onClick={openCreateModal}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Pridať vozidlo</span>
+            <span>{t('vehicles.add')}</span>
           </button>
         </div>
       </div>
@@ -272,10 +274,10 @@ export function VehiclesPage({
         {/* Status Filter Segmented Control */}
         <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg self-start sm:self-auto text-xs">
           {[
-            { id: 'all', label: 'Všetky' },
-            { id: 'active', label: 'Aktívne' },
-            { id: 'in_service', label: 'V servise' },
-            { id: 'out_of_service', label: 'Mimo prevádzky' }
+            { id: 'all', label: t('common.all') },
+            { id: 'active', label: t('common.active') },
+            { id: 'in_service', label: t('common.inService') },
+            { id: 'out_of_service', label: t('common.outOfService') }
           ].map((f) => (
             <button
               key={f.id}
@@ -298,14 +300,14 @@ export function VehiclesPage({
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-[11px]">
               <tr>
-                <th className="py-3 px-4 font-semibold">EČV / Značka</th>
+                <th className="py-3 px-4 font-semibold">{t('vehicles.plateBrand')}</th>
                 <th className="py-3 px-4 font-semibold">Rok / VIN</th>
-                <th className="py-3 px-4 font-semibold">Palivo</th>
-                <th className="py-3 px-4 font-semibold text-right">Tachometer</th>
-                <th className="py-3 px-4 font-semibold text-right">Spotreba</th>
-                <th className="py-3 px-4 font-semibold">Vodič</th>
-                <th className="py-3 px-4 font-semibold text-center">Stav</th>
-                <th className="py-3 px-4 font-semibold text-right">Akcie</th>
+                <th className="py-3 px-4 font-semibold">{t('common.fuel')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('vehicles.odometer')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('vehicles.consumption')}</th>
+                <th className="py-3 px-4 font-semibold">{t('common.driver')}</th>
+                <th className="py-3 px-4 font-semibold text-center">{t('common.status')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('common.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -358,7 +360,7 @@ export function VehiclesPage({
                       </td>
                       <td className="py-3 px-4 text-center">
                         <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium ${statusBadge.bg} ${statusBadge.text}`}>
-                          {statusBadge.label}
+                          {t(`status.${veh.status}` as 'status.active' | 'status.in_service' | 'status.out_of_service')}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>

@@ -20,6 +20,7 @@ import {
 } from '../utils/formatters.js';
 import { Modal } from '../components/Modal.js';
 import { exportToCsv } from '../utils/export.js';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface FuelPageProps {
   fuelRecords: FuelRecord[];
@@ -40,6 +41,7 @@ export function FuelPage({
   api,
   searchTerm = ''
 }: FuelPageProps) {
+  const { t } = useI18n();
   const [localSearch, setLocalSearch] = useState('');
   const [selectedVehicleId, setSelectedVehicleId] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -188,10 +190,10 @@ export function FuelPage({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            Záznamy tankovania
+            {t('page.fuel.title')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Presný monitoring palivových nákladov, výpočet spotreby l/100 km a kontrola tachometrov.
+            {t('page.fuel.description')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -200,14 +202,14 @@ export function FuelPage({
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors shadow-2xs"
           >
             <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Exportovať CSV</span>
+            <span>{t('page.exportCsv')}</span>
           </button>
           <button
             onClick={openCreateModal}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Pridať tankovanie</span>
+            <span>{t('page.addFuel')}</span>
           </button>
         </div>
       </div>
@@ -253,7 +255,7 @@ export function FuelPage({
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Vyhľadať čerpaciu stanicu, EČV alebo vodiča..."
+            placeholder={t('page.searchFuel')}
             value={effectiveSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all"
@@ -261,7 +263,7 @@ export function FuelPage({
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto text-xs">
-          <span className="text-slate-500 font-medium shrink-0">Vozidlo:</span>
+          <span className="text-slate-500 font-medium shrink-0">{t('page.vehicle')}:</span>
           <select
             value={selectedVehicleId}
             onChange={(e) => setSelectedVehicleId(e.target.value)}
@@ -283,15 +285,15 @@ export function FuelPage({
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-[11px]">
               <tr>
-                <th className="py-3 px-4 font-semibold">Dátum</th>
-                <th className="py-3 px-4 font-semibold">Vozidlo</th>
-                <th className="py-3 px-4 font-semibold">Čerpacia stanica</th>
-                <th className="py-3 px-4 font-semibold text-right">Množstvo (l)</th>
-                <th className="py-3 px-4 font-semibold text-right">Cena / l</th>
-                <th className="py-3 px-4 font-semibold text-right">Celková cena</th>
-                <th className="py-3 px-4 font-semibold text-right">Tachometer</th>
-                <th className="py-3 px-4 font-semibold text-right">Spotreba</th>
-                <th className="py-3 px-4 font-semibold text-right">Akcie</th>
+                <th className="py-3 px-4 font-semibold">{t('page.date')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.vehicle')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.station')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.volume')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.pricePerLiter')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.totalPrice')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.odometer')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.consumption')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -385,7 +387,7 @@ export function FuelPage({
               </select>
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Dátum tankovania *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.fuelDate')}</label>
               <input
                 type="date"
                 required
@@ -397,7 +399,7 @@ export function FuelPage({
           </div>
 
           <div>
-            <label className="block font-medium text-slate-700 mb-1">Čerpacia stanica *</label>
+            <label className="block font-medium text-slate-700 mb-1">{t('page.fuelStation')}</label>
             <input
               type="text"
               required
@@ -410,7 +412,7 @@ export function FuelPage({
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Objem paliva (l) *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.fuelVolume')}</label>
               <input
                 type="number"
                 step="0.01"
@@ -422,7 +424,7 @@ export function FuelPage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Cena za liter (€) *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.priceLiter')}</label>
               <input
                 type="number"
                 step="0.001"
@@ -468,7 +470,7 @@ export function FuelPage({
           </div>
 
           <div>
-            <label className="block font-medium text-slate-700 mb-1">Poznámka / číslo dokladu</label>
+            <label className="block font-medium text-slate-700 mb-1">{t('page.fuelNote')}</label>
             <input
               type="text"
               placeholder="Číslo bločku, palivová karta DKV/Slovnaft..."

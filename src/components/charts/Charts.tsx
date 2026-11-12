@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { formatCurrency, formatKm } from '../../utils/formatters.js';
+import { useI18n } from '../../i18n/I18nContext.js';
 
 // -------------------------------------------------------------
 // 1. MONTHLY COSTS BAR CHART (Mesačné náklady)
@@ -12,10 +13,11 @@ interface MonthlyCostItem {
 }
 
 export function MonthlyCostChart({ data }: { data: MonthlyCostItem[] }) {
+  const { t } = useI18n();
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   if (!data || data.length === 0) {
-    return <div className="h-64 flex items-center justify-center text-slate-400 text-sm">Žiadne údaje za zvolené obdobie</div>;
+    return <div className="h-64 flex items-center justify-center text-slate-400 text-sm">{t('chart.noPeriodData')}</div>;
   }
 
   const maxVal = Math.max(...data.map(d => d.total), 100);
@@ -85,11 +87,12 @@ const CATEGORY_COLORS = [
 ];
 
 export function CostStructureChart({ data }: { data: CategoryItem[] }) {
+  const { t } = useI18n();
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   const totalSum = data.reduce((s, d) => s + d.total, 0);
   if (totalSum === 0) {
-    return <div className="h-64 flex items-center justify-center text-slate-400 text-sm">Žiadne zaznamenané náklady</div>;
+    return <div className="h-64 flex items-center justify-center text-slate-400 text-sm">{t('chart.noExpenses')}</div>;
   }
 
   // Generate SVG arcs
@@ -142,7 +145,7 @@ export function CostStructureChart({ data }: { data: CategoryItem[] }) {
           ))}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-xs text-slate-400">Celkovo</span>
+          <span className="text-xs text-slate-400">{t('chart.total')}</span>
           <span className="text-sm font-bold text-slate-800 font-mono tabular-nums">
             {formatCurrency(totalSum)}
           </span>

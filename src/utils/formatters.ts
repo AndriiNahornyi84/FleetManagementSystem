@@ -1,10 +1,16 @@
+let formatLocale = 'sk-SK';
+
+export function setFormatLocale(locale: string) {
+  formatLocale = locale;
+}
+
 /**
  * Slovak formatting utilities (Europe/Bratislava locale, EUR currency, DD.MM.YYYY dates)
  */
 
 export function formatCurrency(amount: number | null | undefined): string {
   if (amount === null || amount === undefined || isNaN(amount)) return '0,00 €';
-  return new Intl.NumberFormat('sk-SK', {
+  return new Intl.NumberFormat(formatLocale, {
     style: 'currency',
     currency: 'EUR',
     minimumFractionDigits: 2,
@@ -14,24 +20,20 @@ export function formatCurrency(amount: number | null | undefined): string {
 
 export function formatKm(km: number | null | undefined): string {
   if (km === null || km === undefined || isNaN(km)) return '0 km';
-  return `${new Intl.NumberFormat('sk-SK').format(km)} km`;
+  return `${new Intl.NumberFormat(formatLocale).format(km)} km`;
 }
 
 export function formatConsumption(lPer100Km: number | null | undefined): string {
   if (lPer100Km === null || lPer100Km === undefined || isNaN(lPer100Km)) return '- l/100 km';
-  return `${new Intl.NumberFormat('sk-SK', { minimumFractionDigits: 1, maximumFractionDigits: 2 }).format(lPer100Km)} l/100 km`;
+  return `${new Intl.NumberFormat(formatLocale, { minimumFractionDigits: 1, maximumFractionDigits: 2 }).format(lPer100Km)} l/100 km`;
 }
 
 export function formatDate(dateString: string | null | undefined): string {
   if (!dateString) return '-';
   try {
-    const parts = dateString.split('T')[0].split('-');
-    if (parts.length === 3) {
-      return `${parts[2]}.${parts[1]}.${parts[0]}`;
-    }
     const d = new Date(dateString);
     if (isNaN(d.getTime())) return dateString;
-    return d.toLocaleDateString('sk-SK', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    return new Intl.DateTimeFormat(formatLocale, { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(d);
   } catch {
     return dateString;
   }
@@ -42,7 +44,7 @@ export function formatDateTime(isoString: string | null | undefined): string {
   try {
     const d = new Date(isoString);
     if (isNaN(d.getTime())) return isoString;
-    return d.toLocaleString('sk-SK', {
+    return d.toLocaleString(formatLocale, {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',

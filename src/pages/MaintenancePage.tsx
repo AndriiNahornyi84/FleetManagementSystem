@@ -19,6 +19,7 @@ import {
 } from '../utils/formatters.js';
 import { Modal } from '../components/Modal.js';
 import { exportToCsv } from '../utils/export.js';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface MaintenancePageProps {
   maintenance: Maintenance[];
@@ -48,6 +49,7 @@ export function MaintenancePage({
   api,
   searchTerm = ''
 }: MaintenancePageProps) {
+  const { t } = useI18n();
   const [localSearch, setLocalSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [vehicleFilter, setVehicleFilter] = useState<string>('all');
@@ -184,10 +186,10 @@ export function MaintenancePage({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            Údržba a servis
+            {t('page.maintenance.title')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Plánovanie pravidelných prehliadok, výmeny prevádzkových kvapalín a opravy vozidiel.
+            {t('page.maintenance.description')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -196,14 +198,14 @@ export function MaintenancePage({
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors shadow-2xs"
           >
             <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Exportovať CSV</span>
+            <span>{t('page.exportCsv')}</span>
           </button>
           <button
             onClick={openCreateModal}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Pridať servisný záznam</span>
+            <span>{t('page.addMaintenance')}</span>
           </button>
         </div>
       </div>
@@ -214,7 +216,7 @@ export function MaintenancePage({
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Hľadať v údržbe, EČV alebo servise..."
+            placeholder={t('page.searchMaintenance')}
             value={effectiveSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all"
@@ -223,17 +225,17 @@ export function MaintenancePage({
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto text-xs">
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-500 font-medium">Stav:</span>
+            <span className="text-slate-500 font-medium">{t('page.status')}:</span>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none text-xs text-slate-800"
             >
-              <option value="all">Všetky stavy</option>
-              <option value="scheduled">Naplánované</option>
-              <option value="in_progress">Prebieha</option>
-              <option value="completed">Dokončené</option>
-              <option value="cancelled">Zrušené</option>
+              <option value="all">{t('common.all')}</option>
+              <option value="scheduled">{t('status.scheduled')}</option>
+              <option value="in_progress">{t('status.in_progress')}</option>
+              <option value="completed">{t('status.completed')}</option>
+              <option value="cancelled">{t('status.cancelled')}</option>
             </select>
           </div>
 
@@ -261,15 +263,15 @@ export function MaintenancePage({
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-[11px]">
               <tr>
-                <th className="py-3 px-4 font-semibold">Dátum</th>
-                <th className="py-3 px-4 font-semibold">Vozidlo</th>
-                <th className="py-3 px-4 font-semibold">Typ zásahu</th>
-                <th className="py-3 px-4 font-semibold">Stredisko</th>
-                <th className="py-3 px-4 font-semibold">Popis práce</th>
-                <th className="py-3 px-4 font-semibold text-right">Tachometer</th>
-                <th className="py-3 px-4 font-semibold text-right">Cena</th>
-                <th className="py-3 px-4 font-semibold text-center">Stav</th>
-                <th className="py-3 px-4 font-semibold text-right">Akcie</th>
+                <th className="py-3 px-4 font-semibold">{t('page.date')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.vehicle')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.serviceType')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.center')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.workDescription')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.odometer')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.amount')}</th>
+                <th className="py-3 px-4 font-semibold text-center">{t('page.status')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -317,7 +319,7 @@ export function MaintenancePage({
                       </td>
                       <td className="py-3 px-4 text-center">
                         <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-medium ${badge.bg} ${badge.text}`}>
-                          {badge.label}
+                          {t(`status.${m.status}` as 'status.completed' | 'status.scheduled' | 'status.in_progress' | 'status.cancelled')}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-right">
@@ -380,7 +382,7 @@ export function MaintenancePage({
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Dátum servisu *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.serviceDate')}</label>
               <input
                 type="date"
                 required
@@ -415,7 +417,7 @@ export function MaintenancePage({
           </div>
 
           <div>
-            <label className="block font-medium text-slate-700 mb-1">Servisné stredisko *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.serviceCenter')}</label>
             <input
               type="text"
               required
@@ -427,7 +429,7 @@ export function MaintenancePage({
           </div>
 
           <div>
-            <label className="block font-medium text-slate-700 mb-1">Popis vykonanej práce a materiálu *</label>
+            <label className="block font-medium text-slate-700 mb-1">{t('page.workDetails')}</label>
             <textarea
               rows={2}
               required
@@ -449,7 +451,7 @@ export function MaintenancePage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Stav úkonu</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.serviceStatus')}</label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}

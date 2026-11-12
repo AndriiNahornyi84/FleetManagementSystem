@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { CompanySettings } from '../types/fleet.js';
 import { Modal } from '../components/Modal.js';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface SettingsPageProps {
   settings: CompanySettings | null;
@@ -26,6 +27,7 @@ export function SettingsPage({
   onShowToast,
   api
 }: SettingsPageProps) {
+  const { t } = useI18n();
   const [formData, setFormData] = useState({
     companyName: settings?.companyName || 'LogiTrans s.r.o.',
     address: settings?.address || 'Priemyselná 12, 040 01 Košice, Slovensko',
@@ -48,7 +50,7 @@ export function SettingsPage({
     setSaving(true);
     try {
       await api.updateSettings(formData);
-      onShowToast('success', 'Firemné nastavenia boli úspešne uložené.');
+      onShowToast('success', t('settings.saved'));
       onRefresh();
     } catch (err: any) {
       onShowToast('error', err.message);
@@ -76,7 +78,7 @@ export function SettingsPage({
       {/* Header */}
       <div className="pb-2 border-b border-slate-200">
         <h1 className="text-xl font-bold tracking-tight text-slate-900">
-          Nastavenia systému
+          {t('page.settings.title')}
         </h1>
         <p className="text-xs text-slate-500 mt-0.5">
           Správa firemných identifikačných údajov, nastavenie lehotových limitov a správa databázy.
@@ -89,13 +91,13 @@ export function SettingsPage({
           <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
             <Building2 className="w-4 h-4 text-blue-600" />
             <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
-              Identifikačné údaje modelového podniku
+              {t('page.companyInfo')}
             </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Názov spoločnosti *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.companyName')}</label>
               <input
                 type="text"
                 required
@@ -105,7 +107,7 @@ export function SettingsPage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Sídlo / Adresa podniku</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.address')}</label>
               <input
                 type="text"
                 value={formData.address}
@@ -123,7 +125,7 @@ export function SettingsPage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">DIČ / IČ DPH</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.taxId')}</label>
               <input
                 type="text"
                 value={formData.icDph}
@@ -132,7 +134,7 @@ export function SettingsPage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Kontaktný dispečerský e-mail</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.contactEmail')}</label>
               <input
                 type="email"
                 value={formData.email}
@@ -141,7 +143,7 @@ export function SettingsPage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Telefón na dispečing</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.phone')}</label>
               <input
                 type="tel"
                 value={formData.phone}
@@ -157,7 +159,7 @@ export function SettingsPage({
           <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
             <BellRing className="w-4 h-4 text-amber-600" />
             <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
-              Konfigurácia automatických upozornení
+              {t('page.alertConfig')}
             </h2>
           </div>
 
@@ -200,7 +202,7 @@ export function SettingsPage({
             className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
-            <span>{saving ? 'Ukladám...' : 'Uložiť nastavenia'}</span>
+            <span>{saving ? t('settings.saving') : t('settings.save')}</span>
           </button>
         </div>
       </form>
@@ -210,7 +212,7 @@ export function SettingsPage({
         <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
           <Server className="w-4 h-4 text-slate-600" />
           <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
-            Správa databázy a obnovenie demonštračných dát
+            {t('page.database')}
           </h2>
         </div>
 
@@ -224,7 +226,7 @@ export function SettingsPage({
           className="flex items-center gap-2 px-3.5 py-2 text-xs font-medium text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors"
         >
           <RotateCcw className="w-4 h-4 text-amber-600" />
-          <span>Obnoviť počiatočné demonštračné údaje</span>
+          <span>{t('page.restoreDemo')}</span>
         </button>
       </div>
 
@@ -232,7 +234,7 @@ export function SettingsPage({
       <div className="p-4 rounded-xl bg-slate-100/70 border border-slate-200 text-xs text-slate-600 space-y-2">
         <div className="flex items-center gap-2 font-semibold text-slate-800">
           <Info className="w-4 h-4 text-blue-600" />
-          <span>Informácie o projekte</span>
+          <span>{t('page.projectInfo')}</span>
         </div>
         <p className="leading-relaxed">
           Webová aplikácia na riadenie a monitorovanie vozového parku (Fleet Management System). Praktická časť diplomovej práce pre modelové logistické podniky v prostredí Slovenskej republiky.
@@ -249,7 +251,7 @@ export function SettingsPage({
       <Modal
         isOpen={isRestoreModalOpen}
         onClose={() => setIsRestoreModalOpen(false)}
-        title="Obnovenie demonštračných údajov"
+        title={t('settings.restoreTitle')}
         subtitle="Všetky existujúce záznamy budú nahradené čistou štruktúrou 10 vozidiel a 6 vodičov."
         maxWidth="sm"
       >
@@ -262,14 +264,14 @@ export function SettingsPage({
               onClick={() => setIsRestoreModalOpen(false)}
               className="px-3 py-1.5 text-slate-600 hover:bg-slate-100 rounded-lg font-medium"
             >
-              Zrušiť
+              {t('page.cancel')}
             </button>
             <button
               onClick={handleRestoreDemo}
               disabled={restoring}
               className="px-3.5 py-1.5 text-white bg-amber-600 hover:bg-amber-700 rounded-lg font-semibold disabled:opacity-50"
             >
-              {restoring ? 'Obnovujem...' : 'Potvrdiť obnovenie'}
+              {restoring ? t('settings.saving') : t('settings.restoreConfirm')}
             </button>
           </div>
         </div>

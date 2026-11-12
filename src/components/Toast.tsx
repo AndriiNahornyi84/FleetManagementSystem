@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckCircle2, AlertTriangle, AlertCircle, X } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext.js';
 
 export interface ToastMessage {
   id: string;
@@ -14,6 +15,7 @@ export function ToastContainer({
   toasts: ToastMessage[];
   onDismiss: (id: string) => void;
 }) {
+  const { t } = useI18n();
   if (toasts.length === 0) return null;
 
   return (
@@ -42,6 +44,7 @@ export function ToastContainer({
             <p className="text-xs font-medium leading-relaxed flex-1">{toast.message}</p>
             <button
               onClick={() => onDismiss(toast.id)}
+              aria-label={t('common.close')}
               className="text-slate-400 hover:text-slate-600 p-0.5"
             >
               <X className="w-4 h-4" />

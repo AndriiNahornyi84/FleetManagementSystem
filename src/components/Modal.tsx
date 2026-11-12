@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface ModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export function Modal({
   children,
   maxWidth = 'lg'
 }: ModalProps) {
+  const { t } = useI18n();
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -57,6 +59,7 @@ export function Modal({
           </div>
           <button
             onClick={onClose}
+            aria-label={t('common.close')}
             className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />

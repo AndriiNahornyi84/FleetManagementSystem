@@ -20,6 +20,7 @@ import {
 import { exportToCsv, printReport } from '../utils/export.js';
 import { CostStructureChart } from '../components/charts/Charts.js';
 import { Vehicle } from '../types/fleet.js';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface ReportsPageProps {
   vehicles: Vehicle[];
@@ -28,6 +29,7 @@ interface ReportsPageProps {
 }
 
 export function ReportsPage({ vehicles, api, onShowToast }: ReportsPageProps) {
+  const { t, locale } = useI18n();
   const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState<any | null>(null);
 
@@ -84,7 +86,7 @@ export function ReportsPage({ vehicles, api, onShowToast }: ReportsPageProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            Štatistiky a analytické reporty
+            {t('page.reports.title')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             Komplexné vyhodnotenie nákladovosti, efektívnosti vozidiel a spotreby pre manažment podniku.
@@ -96,14 +98,14 @@ export function ReportsPage({ vehicles, api, onShowToast }: ReportsPageProps) {
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors shadow-2xs"
           >
             <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Exportovať CSV</span>
+            <span>{t('page.exportCsv')}</span>
           </button>
           <button
             onClick={handlePrint}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span>Tlačiť / Export do PDF</span>
+            <span>{t('report.exportPdf')}</span>
           </button>
         </div>
       </div>
@@ -114,11 +116,11 @@ export function ReportsPage({ vehicles, api, onShowToast }: ReportsPageProps) {
           <div>
             <h2 className="text-xl font-bold text-slate-900">LogiTrans s.r.o. Košice</h2>
             <p className="text-xs text-slate-600">IČO: 47281903 · Priemyselná 12, 040 01 Košice</p>
-            <h3 className="text-sm font-semibold text-slate-800 mt-2">Manažérsky výkaz prevádzky a nákladovosti flotily</h3>
+            <h3 className="text-sm font-semibold text-slate-800 mt-2">{t('report.vehicleCost')}</h3>
           </div>
           <div className="text-right text-xs text-slate-600">
-            <div>Dátum vygenerovania: <span className="font-mono">{new Date().toLocaleDateString('sk-SK')}</span></div>
-            <div>Sledované obdobie: <span className="font-mono">{formatDate(dateFrom)} – {formatDate(dateTo)}</span></div>
+            <div>{t('common.date')}: <span className="font-mono">{new Date().toLocaleDateString(locale)}</span></div>
+            <div>{t('report.period')} <span className="font-mono">{formatDate(dateFrom)} – {formatDate(dateTo)}</span></div>
           </div>
         </div>
       </div>
@@ -127,7 +129,7 @@ export function ReportsPage({ vehicles, api, onShowToast }: ReportsPageProps) {
       <div className="no-print bg-white p-4 rounded-xl border border-slate-200 shadow-2xs flex flex-wrap items-center gap-4 text-xs">
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4 text-slate-400" />
-          <span className="font-medium text-slate-600">Obdobie od:</span>
+          <span className="font-medium text-slate-600">{t('report.from')}</span>
           <input
             type="date"
             value={dateFrom}
@@ -137,7 +139,7 @@ export function ReportsPage({ vehicles, api, onShowToast }: ReportsPageProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="font-medium text-slate-600">do:</span>
+          <span className="font-medium text-slate-600">{t('report.to')}</span>
           <input
             type="date"
             value={dateTo}
@@ -147,13 +149,13 @@ export function ReportsPage({ vehicles, api, onShowToast }: ReportsPageProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="font-medium text-slate-600">Vozidlo:</span>
+          <span className="font-medium text-slate-600">{t('report.vehicle')}</span>
           <select
             value={selectedVehicle}
             onChange={(e) => setSelectedVehicle(e.target.value)}
             className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none bg-white text-slate-800"
           >
-            <option value="all">Celý vozový park</option>
+            <option value="all">{t('report.allFleet')}</option>
             {vehicles.map(v => (
               <option key={v.id} value={v.id}>
                 {v.licensePlate} ({v.brand} {v.model})
@@ -163,25 +165,25 @@ export function ReportsPage({ vehicles, api, onShowToast }: ReportsPageProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="font-medium text-slate-600">Kategória:</span>
+          <span className="font-medium text-slate-600">{t('report.category')}</span>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none bg-white text-slate-800"
           >
-            <option value="all">Všetky výdavky</option>
-            <option value="Palivo">Iba palivo</option>
-            <option value="Servis">Iba servis</option>
-            <option value="Opravy">Iba opravy</option>
-            <option value="Poistenie">Iba poistenie</option>
-            <option value="Pneumatiky">Iba pneumatiky</option>
-            <option value="Diaľničné známky">Iba diaľničné známky</option>
+            <option value="all">{t('report.allExpenses')}</option>
+            <option value="Palivo">{t('report.fuelOnly')}</option>
+            <option value="Servis">{t('report.serviceOnly')}</option>
+            <option value="Opravy">{t('report.repairsOnly')}</option>
+            <option value="Poistenie">{t('report.insuranceOnly')}</option>
+            <option value="Pneumatiky">{t('report.tiresOnly')}</option>
+            <option value="Diaľničné známky">{t('report.tollsOnly')}</option>
           </select>
         </div>
       </div>
 
       {loading || !reportData ? (
-        <div className="p-12 text-center text-slate-400 text-xs">Prepočítavam analytické reporty...</div>
+        <div className="p-12 text-center text-slate-400 text-xs">{t('report.loading')}</div>
       ) : (
         <div className="space-y-6">
           {/* Summary KPIs */}
@@ -223,15 +225,15 @@ export function ReportsPage({ vehicles, api, onShowToast }: ReportsPageProps) {
           <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden print:border-slate-300">
             <div className="p-4 border-b border-slate-200 bg-slate-50/60">
               <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
-                Porovnanie nákladovosti a efektívnosti vozidiel (€ / km)
+              {t('report.vehicleCost')}
               </h3>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-[11px]">
                   <tr>
-                    <th className="py-3 px-4 font-semibold">Vozidlo</th>
-                    <th className="py-3 px-4 font-semibold text-right">Stav tachometra</th>
+                    <th className="py-3 px-4 font-semibold">{t('page.vehicle')}</th>
+                    <th className="py-3 px-4 font-semibold text-right">{t('page.odometer')}</th>
                     <th className="py-3 px-4 font-semibold text-right">Palivo (€)</th>
                     <th className="py-3 px-4 font-semibold text-right">Servis & Ostatné (€)</th>
                     <th className="py-3 px-4 font-semibold text-right">Celkové náklady (€)</th>
@@ -270,7 +272,7 @@ export function ReportsPage({ vehicles, api, onShowToast }: ReportsPageProps) {
           {/* Visual Breakdown by Category */}
           <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs print:border-slate-300">
             <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide mb-4">
-              Rozdelenie nákladov podľa kategórií v sledovanom období
+              {t('report.categoryCosts')}
             </h3>
             <CostStructureChart data={reportData.byCategory} />
           </div>

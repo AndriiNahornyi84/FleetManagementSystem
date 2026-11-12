@@ -15,6 +15,7 @@ import { Inspection, InspectionType, InspectionResult, Vehicle } from '../types/
 import { formatDate, getInspectionGrade } from '../utils/formatters.js';
 import { Modal } from '../components/Modal.js';
 import { exportToCsv } from '../utils/export.js';
+import { useI18n } from '../i18n/I18nContext.js';
 
 interface InspectionsPageProps {
   inspections: Inspection[];
@@ -33,6 +34,7 @@ export function InspectionsPage({
   api,
   searchTerm = ''
 }: InspectionsPageProps) {
+  const { t } = useI18n();
   const [localSearch, setLocalSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -155,10 +157,10 @@ export function InspectionsPage({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            Technické kontroly a lehoty
+            {t('page.inspections.title')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Automatické sledovanie platnosti STK, emisných kontrol (EK), PZP a havarijného poistenia.
+            {t('page.inspections.description')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -167,14 +169,14 @@ export function InspectionsPage({
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors shadow-2xs"
           >
             <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Exportovať CSV</span>
+            <span>{t('page.exportCsv')}</span>
           </button>
           <button
             onClick={openCreateModal}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Zaevidovať kontrolu</span>
+            <span>{t('page.addInspection')}</span>
           </button>
         </div>
       </div>
@@ -232,7 +234,7 @@ export function InspectionsPage({
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Hľadať podľa EČV, stanice alebo protokolu..."
+            placeholder={t('page.searchInspection')}
             value={effectiveSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all"
@@ -262,11 +264,11 @@ export function InspectionsPage({
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none text-xs text-slate-800"
             >
-              <option value="all">Všetky lehoty</option>
-              <option value="valid">Platné (&gt; 30 dní)</option>
-              <option value="warning">Blíži sa termín (&lt; 30 dní)</option>
-              <option value="critical">Kritické (&lt; 7 dní)</option>
-              <option value="expired">Expirované</option>
+              <option value="all">{t('common.all')}</option>
+              <option value="valid">{t('inspection.valid')} (&gt; 30 {t('common.days')})</option>
+              <option value="warning">{t('inspection.expiring')} (&lt; 30 {t('common.days')})</option>
+              <option value="critical">{t('inspection.critical')} (&lt; 7 {t('common.days')})</option>
+              <option value="expired">{t('inspection.expired')}</option>
             </select>
           </div>
         </div>
@@ -278,14 +280,14 @@ export function InspectionsPage({
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-[11px]">
               <tr>
-                <th className="py-3 px-4 font-semibold">Vozidlo</th>
-                <th className="py-3 px-4 font-semibold">Typ kontroly</th>
-                <th className="py-3 px-4 font-semibold">Dátum kontroly</th>
-                <th className="py-3 px-4 font-semibold">Platnosť do</th>
+                <th className="py-3 px-4 font-semibold">{t('page.vehicle')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.inspectionType')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.inspectionDate')}</th>
+                <th className="py-3 px-4 font-semibold">{t('page.validUntil')}</th>
                 <th className="py-3 px-4 font-semibold">Stanica TK / Poisťovňa</th>
                 <th className="py-3 px-4 font-semibold">Protokol / Zmluva</th>
-                <th className="py-3 px-4 font-semibold text-center">Zostáva</th>
-                <th className="py-3 px-4 font-semibold text-right">Akcie</th>
+                <th className="py-3 px-4 font-semibold text-center">{t('page.remaining')}</th>
+                <th className="py-3 px-4 font-semibold text-right">{t('page.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -329,8 +331,8 @@ export function InspectionsPage({
                         <span className={`inline-block px-2.5 py-0.5 rounded text-[11px] font-semibold whitespace-nowrap ${grade.badgeClass}`}>
                           {insp.daysRemaining !== undefined && (
                             insp.daysRemaining < 0
-                              ? `Expirované (${Math.abs(insp.daysRemaining)} d)`
-                              : `${insp.daysRemaining} dní`
+                              ? `${t('inspection.expired')} (${Math.abs(insp.daysRemaining)} ${t('common.days')})`
+                              : `${insp.daysRemaining} ${t('common.days')}`
                           )}
                         </span>
                       </td>
@@ -378,7 +380,7 @@ export function InspectionsPage({
               </select>
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Typ kontroly / poistenia *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.inspectionRecordType')}</label>
               <select
                 required
                 value={formData.type}
@@ -396,7 +398,7 @@ export function InspectionsPage({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Dátum vykonania kontroly *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.inspectionPerformed')}</label>
               <input
                 type="date"
                 required
@@ -419,7 +421,7 @@ export function InspectionsPage({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Stanica TK / Poisťovňa *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.inspectionStation')}</label>
               <input
                 type="text"
                 required
@@ -430,7 +432,7 @@ export function InspectionsPage({
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Číslo protokolu / zmluvy *</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.protocol')}</label>
               <input
                 type="text"
                 required
@@ -444,7 +446,7 @@ export function InspectionsPage({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Výsledok kontroly</label>
+              <label className="block font-medium text-slate-700 mb-1">{t('page.inspectionResult')}</label>
               <select
                 value={formData.result}
                 onChange={(e) => setFormData({ ...formData, result: e.target.value as any })}
